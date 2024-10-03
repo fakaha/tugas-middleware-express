@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import {Readable} from 'stream'
+import { Readable } from "stream";
 import {
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
@@ -14,7 +14,8 @@ cloudinary.config({
 
 export const handleUpload = async (file: Buffer) => {
   return new Promise((resolve, reject) => {
-    const streamedFile = cloudinary.uploader.upload_stream(
+    const writableStreamFile = cloudinary.uploader.upload_stream(
+      // writableStreamFile, variabel custom untuk menulis input(untuk input file)
       { resource_type: "auto" },
       (error, result) => {
         if (error) {
@@ -24,8 +25,10 @@ export const handleUpload = async (file: Buffer) => {
         }
       }
     );
-    let str = Readable.from(file);
-    str.pipe(streamedFile);
+    let ReadableStreamFile = Readable.from(file);
+    // ReadableStreamFile, variable custom untuk baca data. syntax Readable.from() dari node js => membaca aliran data
+    ReadableStreamFile.pipe(writableStreamFile);
+    // memastikan bahwa data dari Readable Stream akan dialirkan langsung ke Writable Stream dan dikirim ke lokasi tujuan
   });
 };
 
