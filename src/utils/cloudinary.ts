@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import {Readable} from 'stream'
 import {
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
@@ -11,13 +12,10 @@ cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-export const handleUpload = async (file: string) => {
+export const handleUpload = async (file: Buffer) => {
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload(
-      file,
-      {
-        resource_type: "auto",
-      },
+    const streamedFile = cloudinary.uploader.upload_stream(
+      { resource_type: "auto" },
       (error, result) => {
         if (error) {
           reject(error);
@@ -26,6 +24,8 @@ export const handleUpload = async (file: string) => {
         }
       }
     );
+    let str = Readable.from(file);
+    str.pipe(streamedFile);
   });
 };
 
