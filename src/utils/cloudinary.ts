@@ -14,6 +14,7 @@ cloudinary.config({
 
 export const handleUpload = async (file: Buffer) => {
   return new Promise((resolve, reject) => {
+    
     const writableStreamFile = cloudinary.uploader.upload_stream(
       // writableStreamFile, variabel custom untuk menulis input(untuk input file)
       { resource_type: "auto" },
@@ -25,6 +26,7 @@ export const handleUpload = async (file: Buffer) => {
         }
       }
     );
+
     let ReadableStreamFile = Readable.from(file);
     // ReadableStreamFile, variable custom untuk baca data. syntax Readable.from() dari node js => membaca aliran data
     ReadableStreamFile.pipe(writableStreamFile);
